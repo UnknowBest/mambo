@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tolecito - Key System</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #0f0f14;
+      background-image: radial-gradient(circle at 50% 0%, #1f2235 0%, #0f0f14 70%);
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .card {
+      background-color: #16161c;
+      border: 1.5px solid #414155;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 420px;
+      padding: 28px 24px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      background-color: rgba(88, 101, 242, 0.15);
+      color: #7289da;
+      border: 1px solid rgba(88, 101, 242, 0.4);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #ffffff;
+    }
+
+    p {
+      font-size: 13px;
+      color: #aaaab9;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .key-box {
+      background-color: #22222c;
+      border: 1px solid #353545;
+      border-radius: 8px;
+      padding: 14px;
+      font-family: Consolas, monospace;
+      font-size: 14px;
+      color: #50e678;
+      word-break: break-all;
+      margin-bottom: 18px;
+      user-select: all;
+    }
+
+    .key-box.error {
+      color: #f55f5f;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+      background-color: #5865f2;
+      color: #ffffff;
+    }
+
+    .btn:hover {
+      background-color: #4752c4;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn.copied {
+      background-color: #2dc770;
+    }
+
+    .footer {
+      margin-top: 18px;
+      font-size: 11px;
+      color: #666677;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <span class="badge" id="badgeStatus">Acceso Desbloqueado</span>
+    <h1 id="titleText">TOLECITO - KEY SYSTEM</h1>
+    <p id="descText">Copia tu clave generada y pégala en la ventana del script dentro de Roblox.</p>
+
+    <div class="key-box" id="keyDisplay">Cargando clave...</div>
+
+    <button class="btn" id="actionBtn">Copiar Key</button>
+
+    <div class="footer">Sistema de verificación automático</div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const key = params.get("key");
+    const linkAcortador = "https://work.ink/1WDD/tolecitokey";
+
+    const keyDisplay = document.getElementById("keyDisplay");
+    const actionBtn = document.getElementById("actionBtn");
+    const badgeStatus = document.getElementById("badgeStatus");
+    const descText = document.getElementById("descText");
+
+    if (key && key !== "{TOKEN}") {
+      keyDisplay.textContent = key;
+
+      actionBtn.addEventListener("click", () => {
+        navigator.clipboard.writeText(key).then(() => {
+          actionBtn.textContent = "¡Key Copiada al Portapapeles!";
+          actionBtn.classList.add("copied");
+          setTimeout(() => {
+            actionBtn.textContent = "Copiar Key";
+            actionBtn.classList.remove("copied");
+          }, 2500);
+        });
+      });
+    } else {
+      // Si entran directo sin pasar por el acortador
+      badgeStatus.textContent = "Sin Clave";
+      badgeStatus.style.color = "#f55f5f";
+      badgeStatus.style.borderColor = "rgba(245, 95, 95, 0.4)";
+      badgeStatus.style.backgroundColor = "rgba(245, 95, 95, 0.12)";
+      descText.textContent = "No se detectó ninguna clave válida. Debes completar el acortador primero.";
+      keyDisplay.textContent = "XXXX-XXXX-XXXX-XXXX";
+      keyDisplay.classList.add("error");
+      actionBtn.textContent = "Ir a Obtener Key";
+
+      actionBtn.addEventListener("click", () => {
+        window.location.href = linkAcortador;
+      });
+    }
+  </script>
+
+</body>
+</html>

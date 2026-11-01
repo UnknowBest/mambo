@@ -125,17 +125,22 @@
     <div class="footer">Sistema de verificación automático</div>
   </div>
 
-  <script>
+<script>
     const params = new URLSearchParams(window.location.search);
-    const key = params.get("key");
     const linkAcortador = "https://work.ink/1WDD/tolecitokey";
+
+    // Busca el parámetro ?key=, ?token= o extrae directamente cualquier UUID de la URL
+    const matchUUID = window.location.href.match(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/);
+    const key = (params.get("key") && params.get("key") !== "{TOKEN}") 
+                ? params.get("key") 
+                : (params.get("token") || (matchUUID ? matchUUID[0] : null));
 
     const keyDisplay = document.getElementById("keyDisplay");
     const actionBtn = document.getElementById("actionBtn");
     const badgeStatus = document.getElementById("badgeStatus");
     const descText = document.getElementById("descText");
 
-    if (key && key !== "{TOKEN}") {
+    if (key) {
       keyDisplay.textContent = key;
 
       actionBtn.addEventListener("click", () => {
@@ -149,12 +154,11 @@
         });
       });
     } else {
-      // Si entran directo sin pasar por el acortador
       badgeStatus.textContent = "Sin Clave";
       badgeStatus.style.color = "#f55f5f";
       badgeStatus.style.borderColor = "rgba(245, 95, 95, 0.4)";
       badgeStatus.style.backgroundColor = "rgba(245, 95, 95, 0.12)";
-      descText.textContent = "No se detectó ninguna clave válida. Debes completar el acortador primero.";
+      descText.textContent = "No se detectó ninguna clave en el enlace. Completa los pasos en Work.ink primero.";
       keyDisplay.textContent = "XXXX-XXXX-XXXX-XXXX";
       keyDisplay.classList.add("error");
       actionBtn.textContent = "Ir a Obtener Key";

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tolecito - Key System</title>
+  <title>Tolecito - Key System Pro</title>
   <style>
     * {
       box-sizing: border-box;
@@ -114,26 +114,38 @@
 <body>
 
   <div class="card">
-    <span class="badge" id="badgeStatus">Acceso Desbloqueado</span>
+    <span class="badge" id="badgeStatus">Verificando Acceso</span>
     <h1 id="titleText">TOLECITO - KEY SYSTEM</h1>
-    <p id="descText">Copia tu clave generada y pégala en la ventana del script dentro de Roblox.</p>
+    <p id="descText">Generando clave única protegida...</p>
 
-    <div class="key-box" id="keyDisplay">Cargando clave...</div>
+    <div class="key-box" id="keyDisplay">Cargando...</div>
 
-    <button class="btn" id="actionBtn">Copiar Key</button>
+    <button class="btn" id="actionBtn">Procesando...</button>
 
-    <div class="footer">Sistema de verificación automático</div>
+    <div class="footer">Sistema protegido contra bypass y replicación</div>
   </div>
 
-<script>
-    const params = new URLSearchParams(window.location.search);
-    const linkAcortador = "https://work.ink/1WDD/tolecitokey";
+  <script>
+    -- ==========================================
+    -- PROTECCIONES EN CLIENTE WEB (VERCEL)
+    -- ==========================================
 
-    // Busca el parámetro ?key=, ?token= o extrae directamente cualquier UUID de la URL
+    // 1. Bloquear clic derecho y consola / inspección de elementos
+    document.addEventListener("contextmenu", (e) => e.preventDefault());
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) || (e.ctrlKey && e.key === "u")) {
+        e.preventDefault();
+      }
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    const linkAcortador = "https://work.ink/463737/tolecitokey"; // Tu link actual de Work.ink
+
+    // 2. Extracción y validación estricta de formato UUID único
     const matchUUID = window.location.href.match(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/);
-    const key = (params.get("key") && params.get("key") !== "{TOKEN}") 
-                ? params.get("key") 
-                : (params.get("token") || (matchUUID ? matchUUID[0] : null));
+    const rawKey = params.get("key") || params.get("token") || (matchUUID ? matchUUID[0] : null);
+    
+    const key = (rawKey && rawKey !== "{TOKEN}" && rawKey.length === 36) ? rawKey : null;
 
     const keyDisplay = document.getElementById("keyDisplay");
     const actionBtn = document.getElementById("actionBtn");
@@ -141,7 +153,13 @@
     const descText = document.getElementById("descText");
 
     if (key) {
+      -- 3. Ocultar la key de la URL inmediatamente para evitar que la compartan o repliquen desde el historial
+      window.history.replaceState({}, document.title, window.location.pathname);
+
+      badgeStatus.textContent = "Acceso Concedido";
+      descText.textContent = "Copia tu clave única protegida y pégala en la ventana del script dentro de Roblox.";
       keyDisplay.textContent = key;
+      actionBtn.textContent = "Copiar Key";
 
       actionBtn.addEventListener("click", () => {
         navigator.clipboard.writeText(key).then(() => {
@@ -154,12 +172,13 @@
         });
       });
     } else {
-      badgeStatus.textContent = "Sin Clave";
+      -- Bloqueo si intentan entrar directo sin completar anuncios o sin token válido
+      badgeStatus.textContent = "Acceso Denegado";
       badgeStatus.style.color = "#f55f5f";
       badgeStatus.style.borderColor = "rgba(245, 95, 95, 0.4)";
       badgeStatus.style.backgroundColor = "rgba(245, 95, 95, 0.12)";
-      descText.textContent = "No se detectó ninguna clave en el enlace. Completa los pasos en Work.ink primero.";
-      keyDisplay.textContent = "XXXX-XXXX-XXXX-XXXX";
+      descText.textContent = "No se detectó una clave válida. Debes completar los pasos en Work.ink para obtener acceso.";
+      keyDisplay.textContent = "ERROR-TOKEN-INVALIDO";
       keyDisplay.classList.add("error");
       actionBtn.textContent = "Ir a Obtener Key";
 
